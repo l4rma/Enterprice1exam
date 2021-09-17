@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:sec="http://www.springframework.org/security/tags"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+>
+
+<!-- Created by arcuri82 -->
+<!-- https://github.com/arcuri82/testing_security_development_enterprise_systems -->
+<ui:composition template="/layout.xhtml">
+    <ui:define name="title">
+        The Movie Room
+    </ui:define>
+
+    <ui:define name="content">
+
+        <c:set var="max" value="10"></c:set>
+        <h2>Movies that we know of</h2>
+
+        <h:dataTable value="#{movieController.getMoviesWithAvgStars(max)}"
+                     var="movie" border="1" id="movieTable">
+            <h:column>
+                <f:facet name="header">Movie Title</f:facet>
+                <h:outputText value="#{movie.movie.title}" id="movieTitleId"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Year of Release</f:facet>
+                <h:outputText value="#{movie.movie.yearOfRelease}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Director</f:facet>
+                <h:outputText value="#{movie.movie.director}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Genre</f:facet>
+                <h:outputText value="#{movie.movie.genre}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Avg Stars</f:facet>
+                <h:outputText value="#{movie.avgStars}" id="avgStarsId">
+                    <f:convertNumber pattern="#,###,##0.00"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <h:button value="Movie details" outcome="#{navigationController.redirectToMovieDetails(movie.movie.id)}" id="detailsId"/>
+            </h:column>
+        </h:dataTable>
+    </ui:define>
+
+</ui:composition>
+</html>

@@ -1,0 +1,9 @@
+/target/
+.idea/
+*.iml
+*.properties
+
+# Project exclude paths
+/backend/target/
+/frontend/target/
+/report/target/

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:sec="http://www.springframework.org/security/tags">
+
+<ui:composition template="/layout.xhtml">
+
+    <ui:define name="title">
+        The Movie Room : Reviews
+    </ui:define>
+
+    <ui:define name="content">
+        <!--        <c:set var="id" value="#{navigationController.currentMovieId}" />-->
+        <c:set var="id" value="#{param['movieId']}"/>
+        <c:set var="max" value="10"/>
+        <h2>
+            <h:outputText value="#{movieController.getMovieById(id).title}" id="movieTitleId"/>
+        </h2>
+        <div><h:outputText value="(#{movieController.getMovieById(id).yearOfRelease})" id="yearOfReleaseId"/></div>
+        <sec:authenticated>
+            <h:outputLabel value="Review not created: Review text must not be empty."
+                           rendered="${param['error'] == 'empty_text'}" id="errorInfoEmptyId"/>
+            <h:outputLabel value="Review not created: You can only write one review per movie."
+                           rendered="${param['error'] == 'duplicate'}" id="errorInfoDuplicateId"/>
+            <h:form id="createReviewForm">
+                <h:outputLabel for="createText">Your review</h:outputLabel>
+                <h:inputText value="#{reviewController.reviewText}" id="createText"/>
+                <input type="hidden" name="movieId" value="#{param['movieId']}"/>
+                <!--            <h:inputText value="#{reviewController.stars}" id="createStars"/>-->
+                <h:selectOneMenu value="#{reviewController.stars}" id="starsDropDownId">
+                    <f:selectItem itemValue="5" itemLabel="5 Star"/>
+                    <f:selectItem itemValue="4" itemLabel="4 Star"/>
+                    <f:selectItem itemValue="3" itemLabel="3 Star"/>
+                    <f:selectItem itemValue="2" itemLabel="2 Star"/>
+                    <f:selectItem itemValue="1" itemLabel="1 Star"/>
+                </h:selectOneMenu>
+                <h:commandButton value="Create"
+                                 action="#{reviewController.createReview(id, userInfoController.userName)}"
+                                 id="createButton"/>
+            </h:form>
+        </sec:authenticated>
+        <h3>Reviews:</h3>
+        <c:choose>
+            <c:when test="#{reviewController.getReviews(id, max).size() == 0}">
+                <h:outputText value="No reviews yet"/>
+            </c:when>
+
+            <c:otherwise>
+                <h:form id="radioFormId">
+                    <input type="hidden" name="movieId" value="#{param['movieId']}"/>
+                    <h:selectOneRadio value="#{reviewController.mode}" id="radioBtnsId">
+                        <h:commandButton value="Sort" action="#{reviewController.sortReviews(id)}" id="radioSubmitBtnId"/>
+                        <f:selectItem itemValue="0" itemLabel="by date" id="radioDateId"/>
+                        <f:selectItem itemValue="1" itemLabel="by stars" id="radioStarsId"/>
+                    </h:selectOneRadio>
+                </h:form>
+
+                <h:dataTable value="#{reviewController.getReviews(id, max)}"
+                             var="review" border="1" id="movieTable">
+                    <h:column>
+                        <f:facet name="header">Date Created</f:facet>
+                        <h:outputText value="#{review.dateCreated}" id="dateId"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Created by</f:facet>
+                        <h:outputText value="#{review.reviewId.user.username}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Review</f:facet>
+                        <h:outputText value="#{review.reviewText}" id="reviewTextId"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Stars (1-5)</f:facet>
+                        <h:outputText value="#{review.stars}" id="starTextId" />
+                    </h:column>
+                </h:dataTable>
+            </c:otherwise>
+        </c:choose>
+
+    </ui:define>
+</ui:composition>
+
+</html>

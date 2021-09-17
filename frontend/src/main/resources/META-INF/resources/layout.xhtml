@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:sec="http://www.springframework.org/security/tags"
+>
+<!-- Created by arcuri82 -->
+<!-- https://github.com/arcuri82/testing_security_development_enterprise_systems -->
+
+
+<h:head>
+    <title>
+        <ui:insert name="title">Default title</ui:insert>
+    </title>
+</h:head>
+
+
+<h:body>
+
+    <p>
+        Back to <a href="/" id="backHomeId">Home</a>
+    </p>
+
+
+    <hr/>
+
+
+    <h1>
+        <ui:insert name="title">Default title</ui:insert>
+    </h1>
+    <hr/>
+
+
+    <ui:insert name="content">Default content</ui:insert>
+
+    <hr/>
+
+    <sec:authenticated>
+        <p><h:outputText value="Logged in as: #{userInfoController.userName}" id="loggedInAsId"/></p>
+
+        <br/>
+
+        <form action="/logout">
+            <input value="Log out" type="submit" id="logoutBtnId"/>
+        </form>
+    </sec:authenticated>
+
+    <sec:anonymous>
+        <p id="infoMsgId">You are not logged in</p>
+        <h:button id="loginBtnId" outcome="/login.jsf" value="Log In"/>
+        <h:button id="signupBtnId" outcome="/signup.jsf" value="Sign Up"/>
+    </sec:anonymous>
+
+</h:body>
+</html>
